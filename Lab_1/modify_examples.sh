@@ -4,6 +4,8 @@ scriptCall=$1
 rootDir=$(pwd)
 rm -rf Examples
 mkdir Examples
+mkdir Examples/Test1
+mkdir Examples/Test1/Workone
 mkdir Examples/Test2
 mkdir Examples/Test3
 mkdir Examples/Test3/WorkThree
@@ -12,6 +14,12 @@ cd Examples/Test3
 touch test3f
 cd WorkThree
 touch three3f
+cd "${rootDir}"
+
+cd Examples/Test1
+touch testone
+cd Workone
+touch testworkone
 cd "${rootDir}"
 
 mkdir Examples/Test5
@@ -30,6 +38,16 @@ mkdir Examples/Test7/Workseven
 mkdir Examples/Test8
 mkdir Examples/Test9
 mkdir Examples/Test9/DontworkNine
+
+mkdir Examples/Test33
+mkdir Examples/Test33/Dontworkthree
+
+cd Examples/Test33
+touch testthree
+cd Dontworkthree
+touch donttestthree
+cd "${rootDir}"
+
 
 cd Examples/Test7
 touch testseven
@@ -210,8 +228,8 @@ echo "Script should substitute the files in test7 and everything inside it start
 echo "=============================="
 read -p "Press enter to continue " key
 
-sh ./$scriptCall -r 's/test/SEDD/' Examples/Test7
-echo "/$scriptCall -r 's/test/SEDD/' Examples/Test7"
+sh ./$scriptCall -r 's/test/SEDD/' Examples/Test1
+echo "/$scriptCall -r 's/test/SEDD/' Examples/Test1"
 echo ""
 echo ""
 echo ""
@@ -230,8 +248,8 @@ echo "Script should substitute the files in test9 and only inside it"
 echo "=============================="
 read -p "Press enter to continue " key
 
-sh ./$scriptCall 's/test/SEDD/' Examples/Test9
-echo "./$scriptCall 's/test/SEDD/' Examples/Test9"
+sh ./$scriptCall 's/test/SEDD/' Examples/Test33
+echo "./$scriptCall 's/test/SEDD/' Examples/Test33"
 echo ""
 echo ""
 echo ""
@@ -244,11 +262,50 @@ else
 fi
 }
 
+Task9()
+{
+echo "Script should run sed command on multiple Test5 and Test7 folders in test9 and only inside it"
+echo "=============================="
+read -p "Press enter to continue " key
+
+sh ./$scriptCall -r 's/test/SEDD/' Examples/Test9 Examples/Test7
+echo "/$scriptCall -r 's/test/SEDD/' Examples/Test9 Examples/Test7"
+echo ""
+echo ""
+echo ""
+read -p "Did the script work? (y/n): " condition
+if [ "$condition" = "y" ]; then
+  echo "Test 8: sed without recursion passed"
+else
+  echo "Test 8 Failed."
+  exit 1
+fi
+}
+
+
+# help command
 # Task1
+
+# no arguments presented
 # Task2
+
+# wrong arguments presented
 # Task3
+
+# both -l and -u arguments given at once
 # Task4
+
+# uppercase without  recursion
 # Task5
+
+# uppercase with recursion
 # Task6
+
+# sed command with recursion
 # Task7
+
+# sed command without recursion
 # Task8
+
+# sed command with recursion and multiple file names
+Task9
