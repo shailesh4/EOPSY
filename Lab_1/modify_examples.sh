@@ -1,0 +1,254 @@
+
+
+scriptCall=$1
+rootDir=$(pwd)
+rm -rf Examples
+mkdir Examples
+mkdir Examples/Test2
+mkdir Examples/Test3
+mkdir Examples/Test3/WorkThree
+
+cd Examples/Test3
+touch test3f
+cd WorkThree
+touch three3f
+cd "${rootDir}"
+
+mkdir Examples/Test5
+mkdir Examples/Test5/WorkFive
+
+cd Examples/Test5
+touch test5f
+cd WorkFive
+touch five5f
+cd "${rootDir}"
+
+mkdir Examples/Test6
+mkdir Examples/Test6/Dontworksix
+mkdir Examples/Test7
+mkdir Examples/Test7/Workseven
+mkdir Examples/Test8
+mkdir Examples/Test9
+mkdir Examples/Test9/DontworkNine
+
+cd Examples/Test7
+touch testseven
+cd Workseven
+touch testworkseven
+cd "${rootDir}"
+
+
+cd Examples/Test9
+touch testnine
+cd DontworkNine
+touch donttestnine
+cd "${rootDir}"
+
+
+mkdir Examples/Test4
+mkdir Examples/Test4/WorkFour
+
+
+Task1()
+{
+echo "Script should display a help message"
+echo "=============================="
+read -p "Press enter to continue " key
+echo ""
+echo ""
+echo ""
+sh ./$scriptCall -h
+echo "${scriptCall} -h"
+echo ""
+echo ""
+echo ""
+read -p "Did the script display a help message? (y/n): " condition
+if [ "$condition" = "y" ]; then
+  echo "Test 1: help function passed"
+else
+  echo "Test 1 Failed."
+  exit 1
+fi
+}
+
+Task2()
+{
+echo "Script should display a error message"
+echo "=============================="
+read -p "Press enter to continue " key
+echo ""
+echo ""
+echo ""
+sh ./$scriptCall
+echo "${scriptCall}"
+echo ""
+echo ""
+echo ""
+read -p "Did the script display a erro message? (No arguments) (y/n): " condition
+if [ "$condition" = "y" ]; then
+  echo "Test 2: no arguments test passed"
+else
+  echo "Test 2 Failed."
+  exit 1
+fi
+}
+
+Task3()
+{
+echo "Script should display a error message"
+echo "=============================="
+read -p "Press enter to continue " key
+echo ""
+echo ""
+echo ""
+sh ./$scriptCall -h -u
+echo "${scriptCall} -h -u"
+echo ""
+echo ""
+echo ""
+read -p "Did the script display a error message? (y/n): " condition
+if [ "$condition" = "y" ]; then
+  echo "Test 3: help without extra arguments passed"
+else
+  echo "Test Failed."
+  exit 1
+fi
+}
+
+Task4()
+{
+echo "Script should display a error message"
+echo "=============================="
+read -p "Press enter to continue " key
+echo ""
+echo ""
+echo ""
+sh ./$scriptCall -l -u
+echo "${scriptCall} -l -u"
+echo ""
+echo ""
+echo ""
+read -p "Did the script display a error message? (y/n): " condition
+if [ "$condition" = "y" ]; then
+  echo "Test 4: extra arguments (-l and -u together) passed"
+else
+  echo "Test 4 Failed."
+  exit 1
+fi
+}
+
+Task4()
+{
+echo "Script should display a error message"
+echo "=============================="
+read -p "Press enter to continue " key
+echo ""
+echo ""
+echo ""
+sh ./$scriptCall -l -u
+echo "${scriptCall} -l -u"
+echo ""
+echo ""
+echo ""
+read -p "Did the script display a error message? (y/n): " condition
+if [ "$condition" = "y" ]; then
+  echo "Test 4: extra arguments (-l and -u together) passed"
+else
+  echo "Test 4 Failed."
+  exit 1
+fi
+}
+
+
+Task5()
+{
+echo "Script should uppercase the files in test3 folder and only that folder"
+echo "=============================="
+read -p "Press enter to continue " key
+echo ""
+echo ""
+echo ""
+sh ./$scriptCall -u Examples/Test3
+echo "./$scriptCall -u Examples/Test3"
+echo ""
+echo ""
+echo ""
+read -p "Did the script work? (y/n): " condition
+if [ "$condition" = "y" ]; then
+  echo "Test 5: uppercase a directory passed"
+else
+  echo "Test 5 Failed."
+  exit 1
+fi
+}
+
+Task6()
+{
+echo "Script should uppercase the file in test5 folder and every file inside it"
+echo "=============================="
+read -p "Press enter to continue " key
+echo ""
+echo ""
+echo ""
+sh ./$scriptCall -u -r Examples/Test5
+echo "./$scriptCall -u -r Examples/Test5"
+echo ""
+echo ""
+echo ""
+read -p "Did the script work? (y/n): " condition
+if [ "$condition" = "y" ]; then
+  echo "Test 6: uppercase with recursion passed"
+else
+  echo "Test 6 Failed."
+  exit 1
+fi
+}
+
+Task7()
+{
+echo "Script should substitute the files in test7 and everything inside it starting from test"
+echo "=============================="
+read -p "Press enter to continue " key
+
+sh ./$scriptCall -r 's/test/SEDD/' Examples/Test7
+echo "/$scriptCall -r 's/test/SEDD/' Examples/Test7"
+echo ""
+echo ""
+echo ""
+read -p "Did the script work? (y/n): " condition
+if [ "$condition" = "y" ]; then
+  echo "Test 7: sed with recursion passed"
+else
+  echo "Test 7 Failed."
+  exit 1
+fi
+}
+
+Task8()
+{
+echo "Script should substitute the files in test9 and only inside it"
+echo "=============================="
+read -p "Press enter to continue " key
+
+sh ./$scriptCall 's/test/SEDD/' Examples/Test9
+echo "./$scriptCall 's/test/SEDD/' Examples/Test9"
+echo ""
+echo ""
+echo ""
+read -p "Did the script work? (y/n): " condition
+if [ "$condition" = "y" ]; then
+  echo "Test 8: sed without recursion passed"
+else
+  echo "Test 8 Failed."
+  exit 1
+fi
+}
+
+# Task1
+# Task2
+# Task3
+# Task4
+# Task5
+# Task6
+# Task7
+# Task8
