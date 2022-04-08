@@ -56,9 +56,11 @@ do
 			flagRecursion=1
 		;;
 		*)
+			break
 			echo ${var}
 		;;
 	esac
+	shift
 done
 
 if [ ${flagHelp} -eq "1" ]; then
@@ -95,17 +97,16 @@ if [ ${flagLower} -eq "1" ]; then
 	currentRegex=${regexLower}
 elif [ ${flagUpper} -eq "1" ]; then
 	currentRegex=${regexUpper}
-elif [ ${flagRecursion} -eq "1" ]; then
-	currentRegex=$2 # if with -r flag, sed pattern is $2
 else
-	currentRegex=$1 # without -r flag, sed pattern is $1
+	currentRegex=$1 # if with -r flag, sed pattern is $2
+	shift
 fi
 
 ## getting the files/directories from arguments
 
-array="${!#}" # last argument for file names
-
-for dir in "${array[@]}"; do
+# with directory names as argument, modify script
+Modify(){
+	for dir in $1; do
 	
 	if [ ${flagRecursion} -eq "1" ]; then
 		findCall="find . | grep \"${dir}\" | tail -r"
@@ -123,20 +124,17 @@ for dir in "${array[@]}"; do
 		# fi
 
 		
-		if [ ${currentFileName} = ${self} ]; then
+		if [ ${currentFileName} = ${self} ]; then # check if it's the same file
 			continue
 		fi
 
 		newFileName=$(echo ${currentFileName} | "gsed" "${currentRegex}")
-		echo "$currentDirectoryname/$newFileName"
-		echo ""
-		echo ""
 
-		if [ $? -ne "0" ]; then
+		if [ $? -ne "0" ]; then # if the sed command worked properly
             continue
         fi
 
-        if [ "$currentFilename" = "$newFileName" ]; then
+        if [ "$currentFileName" = "$newFileName" ]; then # if same name, no need to change anything
             continue
         fi
 
@@ -150,4 +148,13 @@ for dir in "${array[@]}"; do
         
         mv -- "$file" "$currentDirectoryname/$newFileName"
 	done
+done
+
+}
+
+# while the list of arguments isn't 0, call modify function
+while [ $# -gt 0 ]; do
+	Modify "$1"
+	shift
+
 done

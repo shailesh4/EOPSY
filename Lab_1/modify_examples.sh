@@ -67,6 +67,15 @@ mkdir Examples/Test4
 mkdir Examples/Test4/WorkFour
 
 
+yellow()  { ansi 33 "$@"; }
+red()   { ansi 31 "$@"; }
+green()   { ansi 32 "$@"; }
+purple()  { ansi 35 "$@"; }
+ansi()    { echo -e "\033[0;${1}m${2}\033[0m"; }
+
+
+
+
 Task1()
 {
 echo "Script should display a help message"
@@ -76,13 +85,16 @@ echo ""
 echo ""
 echo ""
 sh ./$scriptCall -h
-echo "${scriptCall} -h"
+echo "$(yellow "${scriptCall} -h")"
 echo ""
 echo ""
 echo ""
 read -p "Did the script display a help message? (y/n): " condition
 if [ "$condition" = "y" ]; then
   echo "Test 1: help function passed"
+  echo ""
+  echo ""
+  echo ""
 else
   echo "Test 1 Failed."
   exit 1
@@ -98,13 +110,16 @@ echo ""
 echo ""
 echo ""
 sh ./$scriptCall
-echo "${scriptCall}"
+echo "$(yellow "${scriptCall}")"
 echo ""
 echo ""
 echo ""
 read -p "Did the script display a erro message? (No arguments) (y/n): " condition
 if [ "$condition" = "y" ]; then
   echo "Test 2: no arguments test passed"
+  echo ""
+  echo ""
+  echo ""
 else
   echo "Test 2 Failed."
   exit 1
@@ -120,13 +135,16 @@ echo ""
 echo ""
 echo ""
 sh ./$scriptCall -h -u
-echo "${scriptCall} -h -u"
+echo "$(yellow "${scriptCall} -h -u")"
 echo ""
 echo ""
 echo ""
 read -p "Did the script display a error message? (y/n): " condition
 if [ "$condition" = "y" ]; then
-  echo "Test 3: help without extra arguments passed"
+  echo "Test 3: help with extra arguments passed"
+  echo ""
+  echo ""
+  echo ""
 else
   echo "Test Failed."
   exit 1
@@ -142,37 +160,20 @@ echo ""
 echo ""
 echo ""
 sh ./$scriptCall -l -u
-echo "${scriptCall} -l -u"
+echo "$(yellow "${scriptCall} -l -u")"
 echo ""
 echo ""
 echo ""
 read -p "Did the script display a error message? (y/n): " condition
 if [ "$condition" = "y" ]; then
   echo "Test 4: extra arguments (-l and -u together) passed"
+  echo 
+  echo
+  echo
 else
   echo "Test 4 Failed."
-  exit 1
-fi
-}
-
-Task4()
-{
-echo "Script should display a error message"
-echo "=============================="
-read -p "Press enter to continue " key
-echo ""
-echo ""
-echo ""
-sh ./$scriptCall -l -u
-echo "${scriptCall} -l -u"
-echo ""
-echo ""
-echo ""
-read -p "Did the script display a error message? (y/n): " condition
-if [ "$condition" = "y" ]; then
-  echo "Test 4: extra arguments (-l and -u together) passed"
-else
-  echo "Test 4 Failed."
+  echo 
+  echo
   exit 1
 fi
 }
@@ -187,13 +188,16 @@ echo ""
 echo ""
 echo ""
 sh ./$scriptCall -u Examples/Test3
-echo "./$scriptCall -u Examples/Test3"
+echo "$(yellow "$scriptCall -u Examples/Test3")"
 echo ""
 echo ""
 echo ""
 read -p "Did the script work? (y/n): " condition
 if [ "$condition" = "y" ]; then
-  echo "Test 5: uppercase a directory passed"
+  echo "Test 5: uppercase a directory passed without recursion"
+  echo ""
+  echo ""
+  echo ""
 else
   echo "Test 5 Failed."
   exit 1
@@ -209,13 +213,16 @@ echo ""
 echo ""
 echo ""
 sh ./$scriptCall -u -r Examples/Test5
-echo "./$scriptCall -u -r Examples/Test5"
+echo "$(yellow "$scriptCall -u -r Examples/Test5")"
 echo ""
 echo ""
 echo ""
 read -p "Did the script work? (y/n): " condition
 if [ "$condition" = "y" ]; then
   echo "Test 6: uppercase with recursion passed"
+  echo ""
+  echo ""
+  echo ""
 else
   echo "Test 6 Failed."
   exit 1
@@ -229,13 +236,16 @@ echo "=============================="
 read -p "Press enter to continue " key
 
 sh ./$scriptCall -r 's/test/SEDD/' Examples/Test1
-echo "/$scriptCall -r 's/test/SEDD/' Examples/Test1"
+echo "$(yellow "$scriptCall -r 's/test/SEDD/' Examples/Test1")"
 echo ""
 echo ""
 echo ""
 read -p "Did the script work? (y/n): " condition
 if [ "$condition" = "y" ]; then
   echo "Test 7: sed with recursion passed"
+  echo ""
+  echo ""
+  echo ""
 else
   echo "Test 7 Failed."
   exit 1
@@ -249,13 +259,16 @@ echo "=============================="
 read -p "Press enter to continue " key
 
 sh ./$scriptCall 's/test/SEDD/' Examples/Test33
-echo "./$scriptCall 's/test/SEDD/' Examples/Test33"
+echo "$(yellow "$scriptCall 's/test/SEDD/' Examples/Test33")"
 echo ""
 echo ""
 echo ""
 read -p "Did the script work? (y/n): " condition
 if [ "$condition" = "y" ]; then
   echo "Test 8: sed without recursion passed"
+  echo ""
+  echo ""
+  echo ""
 else
   echo "Test 8 Failed."
   exit 1
@@ -269,43 +282,46 @@ echo "=============================="
 read -p "Press enter to continue " key
 
 sh ./$scriptCall -r 's/test/SEDD/' Examples/Test9 Examples/Test7
-echo "/$scriptCall -r 's/test/SEDD/' Examples/Test9 Examples/Test7"
+echo "$(yellow "$scriptCall -r 's/test/SEDD/' Examples/Test9 Examples/Test7")"
 echo ""
 echo ""
 echo ""
 read -p "Did the script work? (y/n): " condition
 if [ "$condition" = "y" ]; then
-  echo "Test 8: sed without recursion passed"
+  echo "Test 9: sed with recursion with multiple files passed"
+  echo ""
+  echo ""
+  echo ""
 else
-  echo "Test 8 Failed."
+  echo "Test 9 Failed."
   exit 1
 fi
 }
 
 
 # help command
-# Task1
+Task1
 
 # no arguments presented
-# Task2
+Task2
 
 # wrong arguments presented
-# Task3
+Task3
 
 # both -l and -u arguments given at once
-# Task4
+Task4
 
 # uppercase without  recursion
-# Task5
+Task5
 
 # uppercase with recursion
-# Task6
+Task6
 
 # sed command with recursion
-# Task7
+Task7
 
 # sed command without recursion
-# Task8
+Task8
 
 # sed command with recursion and multiple file names
 Task9
