@@ -134,20 +134,15 @@ Modify(){
             continue
         fi
 
-        if [ "$currentFilename" = "$newFileName" ]; then # if same name, no need to change anything
+        if [ "$currentFileName" = "$newFileName" ]; then # if same name, no need to change anything
             continue
         fi
 
         echo ""
 		echo ""
 		# generating new file name using sed currentRegex
-		echo "$currentDirectoryname"
-		echo "$currentFilename"
 		echo "Old file name $currentDirectoryname/$currentFileName"
 		echo "New file Name $currentDirectoryname/$newFileName"
-		echo ""
-		echo ""
-		echo "$file"
 		echo ""
 		echo ""
         
