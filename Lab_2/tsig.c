@@ -18,7 +18,7 @@
 
         sigemptyset(&sig_action.sa_mask);
 
-        sig_action.sa_flags = 0;
+        sig_action.sa_flags = SA_NODEFER;
 
         sigaction(sig_type, &sig_action, NULL);
     }
@@ -131,7 +131,7 @@ int main(){
     printf("\nSuccess: %i child processes finished.\n", j);
 
     #ifdef WITH_SIGNALS
-        for(int i = 0; i < NSIG; i++)  signal(i, SIG_DFL);
+        for(int i = 0; i < NSIG; i++)  signal(i, SIG_DFL); // restore signal handling.
     #endif
 
     return 0;
