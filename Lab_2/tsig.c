@@ -5,7 +5,7 @@
 #include <sys/wait.h>
 #include <stdlib.h>
 
-#define NUM_CHILD  3
+#define NUM_CHILD  10
 
 #ifdef WITH_SIGNALS
 
@@ -18,7 +18,7 @@
 
         sigemptyset(&sig_action.sa_mask);
 
-        sig_action.sa_flags = SA_NODEFER;
+        sig_action.sa_flags = 0;
 
         sigaction(sig_type, &sig_action, NULL);
     }
@@ -37,6 +37,7 @@
         if(sig_type == SIGTERM){
             printf("Child [PID: %i] received terminate signal \n", getpid());
             interrupt_flag = 1;
+            exit(1);
         }
         else{
             printf("Child [PID: %i] received unsupported signal type %i \n", getpid(), sig_type);
@@ -49,7 +50,6 @@ void kill_all(pid_t *list, int size){
     printf("\t PARENT: \n");
     for(int i=0; i<size; i++){
         printf("\t Sent SIGTERM to Child %i \n", list[i]);
-        kill(list[i], SIGTERM);
     }
 }
 
