@@ -1,0 +1,92 @@
+PARENT
+1.
+
+the first thing we do is create a loop 
+
+for(int i=0; i < NSIG; i++)
+	sigignore(i)
+
+this means, all signals are ignored. basically it routes all the flags to handle with SIG_IGN.
+If we handled SIG_IGN, any signal sent would go to that function. Since we are not, it goes to the default SIG_IGN, which ignores the signal
+
+2.
+
+after this, we create a sigaction for SIGINT (interrupt) and bind it to a custom function.
+
+create_sigaction(SIGINT, parent_signal_handler); 
+
+Now if we send a SIGINT to the process, it will call the parent_signal_handler function.
+the function just prints a statement and marks the interruptflag variable to 1
+
+3.
+
+immediately after this, we create a sigaction for SIGCHLD and make it default.
+
+create_sigaction(SIGCHLD, SIG_DFL);
+
+with this, child process is handled as it should be. (the default way) If we didn't do it,  the process
+would become a zombie, since we ignored it before in the loop. (PARENT.1)
+
+
+CHILD_PROCESSES
+
+the first thing we do is create child processes based on NUM_CHILD
+
+for(int i=0; i < NUM_CHILD; i++)
+
+Inside this loop, we will handle all the child process related stuff.
+
+1.
+	child = fork();
+
+this creates the child process.
+
+if child == -1, something went wrong and we print a message and call a kill_all function
+
+2.
+
+if child == 0,
+	first thing, we do is ignore SIGINT flag, so we bind SIG_IGN function with SIGINT flag
+	
+create_sigaction(SIGINT, SIG_IGN);
+
+with this, when we send a SIGINT while running the program, it ignores for child process and handles with custom function for parent (see PARENT.2)
+
+3.
+
+after this, we bind SIGTERM with the child_process
+
+create_sigaction(SIGTERM, child_signal_handler);
+
+so if a SIGTERM signal is sent, we handle it with a custom function child_signal_handler which really just prints a statement.
+
+WAIT
+
+first we call an infinite loop for waiting while(1)
+
+inside that
+
+1.
+
+we call the wait function which waits for child processes to finish
+
+int temp = wait(&child);
+
+if temp == -1
+
+all child processes were finished, so we break from the loop.
+
+else
+
+one of the child process was finished, so we print a statement and continue the loop
+
+LASTLY
+
+we just create the Parent.1 loop but instead of sigignore, we restore all the defaults.
+
+using the function
+for(int i=0; i < NSIG; i++)
+signal(i, SIG_DFL);
+
+
+
