@@ -7,6 +7,8 @@
 
 #define NUM_CHILD  10
 
+#define WITH_SIGNALS
+
 #ifdef WITH_SIGNALS
 
     char interrupt_flag = 0;
@@ -119,6 +121,7 @@ int main(){
     printf("\n PARENT: [%i] has created %i processes. \n", parent_pid, pcounter +1);
 
     int child, j=0;
+    
     while(1){
         int temp = wait(&child);
 
