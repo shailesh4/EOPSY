@@ -13,8 +13,8 @@
 void grab_forks(int left_fork_id);
 void put_away_forks(int left_fork_id);
 void forkop(int left_fork_id, short sem_op);
-void inctotaleat();
-int gettotaleat();
+void inc_total_eat();
+int get_total_eat();
 
 void phil();
 int eat(int meals_left);
@@ -35,7 +35,10 @@ int main() {
 	
 	// creating the set of semaphores
 	semaphor_id = semget(IPC_PRIVATE, NUMBER_OF_PHILOSOHPERS, 0644 | IPC_CREAT);
+	
+	// creating one more semaphore (total number of meals eaten)	
 	total_eating = semget(IPC_PRIVATE, 1, 0644 | IPC_CREAT);
+	// initialize 
 	if(semctl(total_eating, 0, SETVAL, 1) == -1){printf("semctl failed");}
 
 	if(semaphor_id == -1) {
@@ -108,7 +111,7 @@ void forkop(int left_fork_id, short sem_op)
         printf("> \t\t %s_forks semop failed. \n", sem_op == -1 ? "grab" : "put_away");
 }
 
-void inctotaleat()
+void inc_total_eat()
 {
 	struct sembuf op[1];
 	op[0].sem_num = 0;
@@ -119,7 +122,7 @@ void inctotaleat()
 		printf("forks semop failed.");
 }
 
-int gettotaleat()
+int get_total_eat()
 {
 	return semctl(total_eating,0, GETVAL, 1 );
 }
@@ -134,8 +137,7 @@ void phil() {
 			if(val == 1){
 				no_of_meals++;
 			}else{
-				//TOTAL_EATING++;
-				inctotaleat();
+				inc_total_eat();
 			}
 			hungry = 0;
 		}
@@ -148,7 +150,7 @@ void phil() {
 
 int eat(int meals_left) {
 	int current_meal = FOOD_LIMIT-meals_left;
-	int total_meals = gettotaleat();
+	int total_meals = get_total_eat();
 	if(total_meals/NUMBER_OF_PHILOSOHPERS + 1 >= current_meal){
 		grab_forks(philosopher_id);
 		printf("%s is eating\n", philosophers_list[philosopher_id]);
