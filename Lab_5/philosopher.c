@@ -13,15 +13,18 @@
 void grab_forks(int left_fork_id);
 void put_away_forks(int left_fork_id);
 void forkop(int left_fork_id, short sem_op);
+void inctotaleat();
+int gettotaleat();
+
 void phil();
-void eat(int meals_left);
+int eat(int meals_left);
 void think();
 
 char* philosophers_list[5] = {"0","1","2","3","4"};
-int philosopher_id,semaphor_id,pid,status;
+int philosopher_id,semaphor_id,pid,status, total_eating;
 
 int main() {
-	printf("=========================================================\n");
+    printf("=========================================================\n");
     printf("Main process has started.\n");
     printf("Number of philosophers in dining session:\t %i\n", NUMBER_OF_PHILOSOHPERS);
     printf("Eating period for each philosopher:\t\t %i\n", EATING_TIME);
@@ -32,6 +35,8 @@ int main() {
 	
 	// creating the set of semaphores
 	semaphor_id = semget(IPC_PRIVATE, NUMBER_OF_PHILOSOHPERS, 0644 | IPC_CREAT);
+	total_eating = semget(IPC_PRIVATE, 1, 0644 | IPC_CREAT);
+	if(semctl(total_eating, 0, SETVAL, 1) == -1){printf("semctl failed");}
 
 	if(semaphor_id == -1) {
 		printf("\nERROR: Allocation of semaphor set unsuccessfull.\n");
@@ -103,7 +108,21 @@ void forkop(int left_fork_id, short sem_op)
         printf("> \t\t %s_forks semop failed. \n", sem_op == -1 ? "grab" : "put_away");
 }
 
+void inctotaleat()
+{
+	struct sembuf op[1];
+	op[0].sem_num = 0;
+	op[0].sem_op = 1;
+	op[0].sem_flg = 0;
+	
+	if(semop(total_eating, op, 1) == -1)
+		printf("forks semop failed.");
+}
 
+int gettotaleat()
+{
+	return semctl(total_eating,0, GETVAL, 1 );
+}
 
 void phil() {
 	printf("%s came to the table.\n", philosophers_list[philosopher_id]);
@@ -111,7 +130,13 @@ void phil() {
 	char hungry = 0;
 	while(no_of_meals) {
 		if(hungry) {
-			eat(--no_of_meals);
+			int val = eat(--no_of_meals);
+			if(val == 1){
+				no_of_meals++;
+			}else{
+				//TOTAL_EATING++;
+				inctotaleat();
+			}
 			hungry = 0;
 		}
 		else {
@@ -121,11 +146,14 @@ void phil() {
 	}
 }
 
-void eat(int meals_left) {
-	grab_forks(philosopher_id);
-	printf("%s is eating\n", philosophers_list[philosopher_id]);
-	sleep(EATING_TIME);
-	printf("%s ate his %d",philosophers_list[philosopher_id],(FOOD_LIMIT-meals_left));
+int eat(int meals_left) {
+	int current_meal = FOOD_LIMIT-meals_left;
+	int total_meals = gettotaleat();
+	if(total_meals/NUMBER_OF_PHILOSOHPERS + 1 >= current_meal){
+		grab_forks(philosopher_id);
+		printf("%s is eating\n", philosophers_list[philosopher_id]);
+		sleep(EATING_TIME);
+		printf("%s ate his %d",philosophers_list[philosopher_id],(FOOD_LIMIT-meals_left));
 			switch (FOOD_LIMIT-meals_left){
 				case 1:
 					printf("st");
@@ -140,7 +168,10 @@ void eat(int meals_left) {
 					printf("th");
 			}
 			printf(" meal.\n");
-	put_away_forks(philosopher_id);
+		put_away_forks(philosopher_id);
+		return 0;
+	}
+	return 1;
 }
 
 void think() {
