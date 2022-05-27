@@ -19,7 +19,7 @@ int copy_mmap(int fd_from, int fd_to)
 
     if ((file_size = lseek(fd_from, 0, SEEK_END)) == -1)
         error(1, errno, "lseek() failed: unable to get file size");
-    
+
     source_file = mmap(NULL, file_size, PROT_READ, MAP_PRIVATE, fd_from, 0);
 
     if (source_file == MAP_FAILED)
@@ -98,14 +98,14 @@ int main(int argc, char *argv[])
         }
         else
         {
-            fprintf(stderr, "%s", "copy: error: unexpected argument. Please refer to help\n");
+            error(1, errno, "copy: error: unexpected argument. Please refer to help\n");
             return 1;
         }
     }
     
     if (argc - optind != 2)
     {
-        fprintf(stderr, "%s", "copy: error: expected two positional arguments\n");
+        error(1, errno, "copy: error: expected two positional arguments\n");
         return 1;
     }
 
@@ -121,6 +121,12 @@ int main(int argc, char *argv[])
         copy_mmap(fd_from, fd_to);
     else
         copy_read_write(fd_from, fd_to);
+
+     if (close(fd_from))
+    	error(1, errno, "close() has failed on input file");
+    
+    if (close(fd_to))
+    	error(1, errno, "close() has failed on destination file");
 
     return 0;
 }
