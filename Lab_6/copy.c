@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <error.h>
 #include <errno.h>
-#include <string.h> // memcpy
+#include <string.h> 
 
 
 int copy_mmap(int fd_from, int fd_to)
@@ -35,9 +35,6 @@ int copy_mmap(int fd_from, int fd_to)
 
     memcpy(destination_file, source_file, file_size);
 
-    if (msync(destination_file, file_size, MS_SYNC) == -1)
-        error(1, errno, "msync() failed for destination file");
-
     if (munmap(source_file, file_size) == -1)
         error(1, errno, "munmap() failed for source file");
 
@@ -58,13 +55,12 @@ int copy_read_write(int fd_from, int fd_to)
 	{
 
 	    out_buffer = inp_buffer;
-        if ((num_written = write(fd_to, out_buffer, num_read)) >= 0)
+        if ((num_written = write(fd_to, out_buffer, num_read)) == -1)
         {
-            out_buffer += num_written;
-            num_read   -= num_written;
+            error(1, errno, "write() failed");            
+            
         }
-        else
-            error(1, errno, "write() failed");
+
 	}
 	if (num_read < 0)
 	    error(1, errno, "read() failed");
@@ -105,16 +101,17 @@ int main(int argc, char *argv[])
     
     if (argc - optind != 2)
     {
-        error(1, errno, "copy: error: expected two positional arguments\n");
+        error(1, errno, "copy: error: expected two positional arguments at the end\n");
         return 1;
     }
 
     int fd_from, fd_to;
+    
 
     if ((fd_from = open(argv[optind], O_RDONLY)) == -1)
         error(1, errno, "open() has failed on input file");
 
-    if ((fd_to = open(argv[optind + 1], O_CREAT | O_RDWR, S_IRUSR | S_IWUSR)) == -1)
+    if ((fd_to = open(argv[optind + 1], O_CREAT | O_RDWR | O_TRUNC, S_IRUSR | S_IWUSR)) == -1)
         error(1, errno, "open() has failed on output file");
 
     if (flagMemory)
